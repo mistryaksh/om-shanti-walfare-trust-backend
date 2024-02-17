@@ -40,15 +40,13 @@ export class EventController implements IController {
 
      public async RegisterNewEvent(req: Request, res: Response) {
           try {
-               const { label, subTitle, bannerImage, description, image, postedOn, categoryId }: IEventsProps =
-                    req.body;
-               if (!label || !subTitle || !bannerImage || !description || !image || !postedOn || !categoryId) {
+               const { label, subTitle, description, image, postedOn, categoryId }: IEventsProps = req.body;
+               if (!label || !subTitle || !description || !image || !postedOn || !categoryId) {
                     return UnAuthorized(res, "missing fields");
                }
                const event = await new Event({
                     label,
                     subTitle,
-                    bannerImage,
                     description,
                     image,
                     postedOn,
@@ -57,7 +55,8 @@ export class EventController implements IController {
 
                return Ok(res, `${event.label} is created`);
           } catch (err) {
-               return UnAuthorized(res, err as string);
+               console.log(err);
+               return UnAuthorized(res, err);
           }
      }
 

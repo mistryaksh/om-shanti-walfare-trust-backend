@@ -7,6 +7,7 @@ import { GetJwtToken, UnAuthorized, VerifyJwtToken } from "utils";
 export const AdminRoute = async (req: Request, res: Response, next: NextFunction) => {
      try {
           const token = GetJwtToken(req);
+          console.log(token);
 
           if (!token) {
                return UnAuthorized(res, AccountJwtError.TOKEN_NOT_EXIST);

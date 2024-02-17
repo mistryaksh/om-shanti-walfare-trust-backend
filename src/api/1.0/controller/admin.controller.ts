@@ -41,7 +41,7 @@ export class AdminController implements IController {
           this.routes.push({
                handler: this.LogoutAdminAccount,
                method: "POST",
-               path: `/${ADMIN_PREFIX}/logout`,
+               path: `/${ADMIN_PREFIX}/sign-out`,
                middleware: [AdminRoute],
           });
      }
@@ -140,7 +140,6 @@ export class AdminController implements IController {
 
      public async LogoutAdminAccount(req: Request, res: Response) {
           try {
-               res.headersSent = false;
                res.removeHeader("authorization");
                return Ok(res, "LOGGED_OUT");
           } catch (err) {

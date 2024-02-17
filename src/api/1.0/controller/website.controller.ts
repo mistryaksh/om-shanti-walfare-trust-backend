@@ -18,11 +18,20 @@ export class WebsiteController implements IController {
                path: `/${USER_CONTACT}/new`,
                method: "POST",
           });
-
+          this.routes.push({
+               handler: this.GetNgoProfile,
+               method: "GET",
+               path: `/${NGO_PROFILE}`,
+          });
           this.routes.push({
                handler: this.GetAllUserContact,
                path: `/${USER_CONTACT}/all`,
                method: "GET",
+          });
+          this.routes.push({
+               handler: this.GetNgoProfileById,
+               method: "GET",
+               path: `/${NGO_PROFILE}/:ngoProfileId`,
           });
           this.routes.push({
                handler: this.GetAllUserContact,
@@ -52,21 +61,12 @@ export class WebsiteController implements IController {
                method: "GET",
                path: `/${USER_DONATION_CONFIG}/:donationConfigId`,
           });
-          this.routes.push({
-               handler: this.GetNgoProfile,
-               method: "GET",
-               path: `/${NGO_PROFILE}`,
-          });
+
           this.routes.push({
                handler: this.NewNgoProfile,
                method: "POST",
                path: `/${NGO_PROFILE}`,
                middleware: [AdminRoute],
-          });
-          this.routes.push({
-               handler: this.GetNgoProfileById,
-               method: "GET",
-               path: `/${NGO_PROFILE}/:ngoProfileId`,
           });
      }
 

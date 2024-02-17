@@ -6,7 +6,7 @@ export interface IEventsProps {
      subTitle: string;
      postedOn: Date;
      description: string; //should be an rich text string
-     bannerImage: string;
+     // bannerImage: string;
      active: boolean;
      categoryId: ObjectId;
 }

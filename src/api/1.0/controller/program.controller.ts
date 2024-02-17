@@ -16,12 +16,12 @@ export class ProgramController implements IController {
           this.routes.push({
                handler: this.GetAllPrograms,
                method: "GET",
-               path: `/${ADMIN_PROGRAM}`,
+               path: `/${ADMIN_PROGRAM}/all`,
           });
           this.routes.push({
                handler: this.GetProgramById,
                method: "GET",
-               path: `/${ADMIN_PROGRAM}/:programId`,
+               path: `/${ADMIN_PROGRAM}/by-id/:programId`,
           });
           this.routes.push({
                handler: this.UpdateProgramById,

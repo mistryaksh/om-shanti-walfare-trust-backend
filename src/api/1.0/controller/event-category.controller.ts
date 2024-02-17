@@ -23,17 +23,17 @@ export class EventCategoryController implements IController {
           this.routes.push({
                handler: this.GetEventCategoryById,
                method: "GET",
-               path: `/${ADMIN_EVENTS_CATEGORY}/:id`,
+               path: `/${ADMIN_EVENTS_CATEGORY}/:categoryId`,
           });
           this.routes.push({
                handler: this.UpdateEventCategoryById,
-               path: `/${ADMIN_EVENTS_CATEGORY}/:id`,
+               path: `/${ADMIN_EVENTS_CATEGORY}/by-id/:categoryId`,
                method: "PUT",
                middleware: [AdminRoute],
           });
           this.routes.push({
                handler: this.DeleteEventCategoryById,
-               path: `/${ADMIN_EVENTS_CATEGORY}/:id`,
+               path: `/${ADMIN_EVENTS_CATEGORY}/:categoryId`,
                method: "DELETE",
                middleware: [AdminRoute],
           });
