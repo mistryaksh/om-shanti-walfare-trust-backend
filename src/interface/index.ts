@@ -5,3 +5,4 @@ export * from "./contact.interface";
 export * from "./user-contact.interface";
 export * from "./donation.interface";
 export * from "./ngo-profile.interface";
+export * from "./blog.interface";

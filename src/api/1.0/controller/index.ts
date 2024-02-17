@@ -5,3 +5,4 @@ export * from "./event.controller";
 export * from "./contact.controller";
 export * from "./program.controller";
 export * from "./website.controller";
+export * from "./blog.controller";

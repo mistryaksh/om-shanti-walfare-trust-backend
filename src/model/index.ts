@@ -5,3 +5,4 @@ export * from "./program.model";
 export * from "./user-contact.model";
 export * from "./donation-config.model";
 export * from "./ngo-profile.model";
+export * from "./blog.model";

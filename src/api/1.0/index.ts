@@ -3,6 +3,7 @@ import { IController } from "../../interface";
 import {
      AdminController,
      ApiController,
+     BlogController,
      ContactController,
      EventCategoryController,
      EventController,
@@ -40,4 +41,5 @@ export const registerRoutesV1 = (express: Express) => {
      routesHandler(express, new ProgramController());
      routesHandler(express, new ContactController());
      routesHandler(express, new WebsiteController());
+     routesHandler(express, new BlogController());
 };

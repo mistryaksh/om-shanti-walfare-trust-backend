@@ -62,7 +62,7 @@ export class EventController implements IController {
 
      public async GetAllEvents(req: Request, res: Response) {
           try {
-               const event = await Event.find().sort({ createdAt: -1 });
+               const event = await Event.find().sort({ createdAt: -1 }).populate("categoryId");
                return Ok(res, event);
           } catch (err) {
                return UnAuthorized(res, err);

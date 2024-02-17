@@ -6,3 +6,4 @@ export const ADMIN_CONTACT: string = "contact";
 export const USER_CONTACT: string = "user";
 export const USER_DONATION_CONFIG: string = "donation/config";
 export const NGO_PROFILE: string = "ngo";
+export const BLOG_PREFIX: string = "blogs";
