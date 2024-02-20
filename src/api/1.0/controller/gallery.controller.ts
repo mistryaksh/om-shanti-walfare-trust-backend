@@ -44,6 +44,7 @@ export class GalleryController implements IController {
                const gallery = await Gallery.find().sort({ createdAt: -1 });
                return Ok(res, gallery);
           } catch (err) {
+               console.log(err);
                return UnAuthorized(res, err as string);
           }
      }
