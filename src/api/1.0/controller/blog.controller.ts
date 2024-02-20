@@ -61,9 +61,10 @@ export class BlogController implements IController {
 
      public async GetAllBlogs(req: Request, res: Response) {
           try {
-               const blog = await Blog.find().sort({ createdAt: -1 });
+               const blog = await Blog.find().sort({ createdAt: -1 }).populate("category").populate("postedBy");
                return Ok(res, blog);
           } catch (err) {
+               console.log(err);
                return UnAuthorized(res, err);
           }
      }

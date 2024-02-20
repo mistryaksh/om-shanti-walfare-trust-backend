@@ -7,3 +7,5 @@ export const USER_CONTACT: string = "user";
 export const USER_DONATION_CONFIG: string = "donation/config";
 export const NGO_PROFILE: string = "ngo";
 export const BLOG_PREFIX: string = "blogs";
+export const DONATIONS_PREFIX: string = "donations";
+export const GALLERY_PREFIX: string = "gallery";

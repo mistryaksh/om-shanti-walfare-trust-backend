@@ -6,3 +6,4 @@ export * from "./user-contact.interface";
 export * from "./donation.interface";
 export * from "./ngo-profile.interface";
 export * from "./blog.interface";
+export * from "./gallery.interface";

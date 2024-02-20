@@ -9,11 +9,14 @@ import config from "config";
 import cors, { CorsOptions } from "cors";
 import { errorHandler, notFoundMiddleware } from "./middleware";
 import { registerRoutesV1 } from "./api";
+import dotenv from "dotenv";
 
 const corsOptions: CorsOptions = {
      credentials: true,
      origin: "*",
 };
+
+// dotenv.config();
 
 class App {
      express: Express;

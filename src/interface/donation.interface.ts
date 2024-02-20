@@ -4,3 +4,15 @@ export interface IDonationConfigProps {
      minimumDonation: string;
      active?: boolean;
 }
+
+export interface IDonationProps {
+     amount: number;
+     custName: string;
+     email: string;
+     mobile: string;
+     referenceId: string;
+     paymentToken: string;
+     status: DonationStatus;
+}
+
+export type DonationStatus = "SUCCESS" | "REFUNDED" | "FAILED" | "CANCELLED" | "NOT_PERFORMED" | "INITIATED";

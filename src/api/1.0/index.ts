@@ -5,9 +5,10 @@ import {
      ApiController,
      BlogController,
      ContactController,
+     DonationController,
      EventCategoryController,
      EventController,
-     ProgramController,
+     GalleryController,
      WebsiteController,
 } from "./controller";
 
@@ -38,8 +39,9 @@ export const registerRoutesV1 = (express: Express) => {
      routesHandler(express, new AdminController());
      routesHandler(express, new EventCategoryController());
      routesHandler(express, new EventController());
-     routesHandler(express, new ProgramController());
      routesHandler(express, new ContactController());
      routesHandler(express, new WebsiteController());
      routesHandler(express, new BlogController());
+     routesHandler(express, new DonationController());
+     routesHandler(express, new GalleryController());
 };
