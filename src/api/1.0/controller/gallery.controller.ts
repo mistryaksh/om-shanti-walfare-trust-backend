@@ -41,7 +41,7 @@ export class GalleryController implements IController {
 
      public async GetAllGallery(req: Request, res: Response) {
           try {
-               const gallery = await Gallery.find().sort({ createdAt: -1 });
+               const gallery = await Gallery.find().sort({ createdAt: -1 }).populate("postedBy");
                return Ok(res, gallery);
           } catch (err) {
                console.log(err);
@@ -52,7 +52,7 @@ export class GalleryController implements IController {
      public async GetGalleryById(req: Request, res: Response) {
           try {
                const galleryId = req.params.galleryId;
-               const gallery = await Gallery.findById({ _id: galleryId });
+               const gallery = (await Gallery.findOne({ _id: galleryId })).populate("postedBy");
                return Ok(res, gallery);
           } catch (err) {
                return UnAuthorized(res, err);
@@ -69,7 +69,7 @@ export class GalleryController implements IController {
                const verified = VerifyJwtToken(token);
                const admin = await Admin.findById({ _id: verified.id });
                const newGallery = await new Gallery({ description, images, postedBy: admin._id, title }).save();
-               return Ok(res, `${newGallery} has been uploaded to your website`);
+               return Ok(res, `${newGallery.title} has been uploaded to your website`);
           } catch (err) {
                return UnAuthorized(res, err);
           }

@@ -61,7 +61,6 @@ export class WebsiteController implements IController {
                method: "GET",
                path: `/${USER_DONATION_CONFIG}/:donationConfigId`,
           });
-
           this.routes.push({
                handler: this.NewNgoProfile,
                method: "POST",
