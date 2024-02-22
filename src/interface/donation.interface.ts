@@ -16,3 +16,9 @@ export interface IDonationProps {
 }
 
 export type DonationStatus = "SUCCESS" | "REFUNDED" | "FAILED" | "CANCELLED" | "NOT_PERFORMED" | "INITIATED";
+
+export interface SendMailProps {
+     donatorMailId: string;
+     subject: string;
+     fileLink: string;
+}

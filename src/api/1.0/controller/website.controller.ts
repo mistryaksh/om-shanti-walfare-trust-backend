@@ -8,7 +8,7 @@ import {
      IUserContactProps,
 } from "../../../interface";
 import { NGO_PROFILE, Ok, USER_CONTACT, USER_DONATION_CONFIG, UnAuthorized } from "../../../utils";
-import { DonationConfig, NgoProfile, UserContact } from "model";
+import { Admin, Blog, Donation, DonationConfig, Event, NgoProfile, Program, UserContact } from "model";
 
 export class WebsiteController implements IController {
      public routes: IControllerRoutes[] = [];
@@ -65,6 +65,12 @@ export class WebsiteController implements IController {
                handler: this.NewNgoProfile,
                method: "POST",
                path: `/${NGO_PROFILE}`,
+               middleware: [AdminRoute],
+          });
+          this.routes.push({
+               handler: this.DataAnalyser,
+               method: "GET",
+               path: `/${NGO_PROFILE}/database/data-analyser`,
                middleware: [AdminRoute],
           });
      }
@@ -175,6 +181,24 @@ export class WebsiteController implements IController {
                }).save();
                return Ok(res, `${newNgoProfile} is created`);
           } catch (err) {
+               return UnAuthorized(res, err);
+          }
+     }
+
+     public async DataAnalyser(req: Request, res: Response) {
+          try {
+               const blogs = (await Blog.find()).length;
+               const program = (await Program.find()).length;
+               const event = (await Event.find()).length;
+               const donations = (await Donation.find()).length;
+               return Ok(res, {
+                    blogs,
+                    program,
+                    event,
+                    donations,
+               });
+          } catch (err) {
+               console.log(err);
                return UnAuthorized(res, err);
           }
      }

@@ -20,6 +20,7 @@ export class AdminController implements IController {
                handler: this.RegisterAdminAccount,
                path: `/${ADMIN_PREFIX}/sign-up`,
                method: "POST",
+               middleware: [AdminRoute],
           });
           this.routes.push({
                handler: this.LoginAdminAccount,
@@ -78,10 +79,7 @@ export class AdminController implements IController {
                     },
                }).save();
 
-               return Ok(res, {
-                    message: `${newAdmin.name.firstName} ${newAdmin.name.lastName} is registered`,
-                    useEmail: newAdmin.contact.email,
-               });
+               return Ok(res, `${newAdmin.name.firstName} ${newAdmin.name.lastName} is registered`);
           } catch (err) {
                console.log(err);
                return UnAuthorized(res, err);
