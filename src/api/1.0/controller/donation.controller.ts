@@ -1,122 +1,90 @@
 import { Request, Response } from "express";
-import { AdminRoute } from "../../../middleware";
-import { IController, IControllerRoutes, IDonationProps, SendMailProps } from "../../../interface";
-import { DONATIONS_PREFIX, MailService, Ok, UnAuthorized } from "../../../utils";
-import { RazorPayService } from "services/razorpay.services";
+import {} from "../../../middleware";
+import {
+     DonationInitialProps,
+     IController,
+     IControllerRoutes,
+     IDonationProps,
+     PhonePeRedirectMode,
+     PhonePeRequestedBody,
+} from "../../../interface";
+import axios from "axios";
+import { Ok, UnAuthorized } from "../../../utils";
+import { newPayment } from "services/phone-pe.service";
+import crypto, { randomUUID } from "crypto";
 import { Donation } from "model";
-import jwt from "jsonwebtoken";
-import config from "config";
-import { Attachment } from "nodemailer/lib/mailer";
 
 export class DonationController implements IController {
      public routes: IControllerRoutes[] = [];
      constructor() {
           this.routes.push({
-               handler: this.StartDonation,
-               path: `/${DONATIONS_PREFIX}`,
+               handler: this.PayApi,
+               path: "/donation/pay",
                method: "POST",
           });
           this.routes.push({
-               handler: this.GetAllDonations,
-               method: "GET",
-               path: `/${DONATIONS_PREFIX}/all`,
-               middleware: [AdminRoute],
+               handler: this.PayApi,
+               path: "/donation/check-status/:transactionId",
+               method: "POST",
           });
-          this.routes.push({ handler: this.GetDonationById, method: "GET", path: `/${DONATIONS_PREFIX}/:donationId` });
-          this.routes.push({ handler: this.SendMailToDonator, method: "POST", path: `/${DONATIONS_PREFIX}/send-mail` });
      }
 
-     public async StartDonation(req: Request, res: Response) {
+     public async PayApi(req: Request, res: Response) {
           try {
-               const { amount, custName, email, mobile }: IDonationProps = req.body;
-               if (!amount || !custName || !email || !mobile) {
-                    return UnAuthorized(res, "missing fields");
+               const merchantTransactionId = "M" + Date.now();
+               const { amount, email, mobile, userName, userId }: DonationInitialProps = req.body;
+               if (!amount || !email || !mobile || !userName) {
+                    return UnAuthorized(res, "missing credentials");
                }
-               const refId = ` ${custName.replace(" ", "")}__#${Date.now()}`;
-               const paymentToken = jwt.sign(
-                    {
-                         refId: refId,
-                         custName: custName,
+               const data: PhonePeRequestedBody = {
+                    merchantId: process.env.PHONE_PE_MERCHAT_ID,
+                    merchantTransactionId: merchantTransactionId,
+                    merchantUserId: "MUID" + userId,
+                    name: userName,
+                    amount: amount * 100,
+                    // !Change call here
+                    redirectUrl: `http://localhost:3001/api/v1/status/${merchantTransactionId}`,
+                    redirectMode: PhonePeRedirectMode.POST,
+                    mobileNumber: mobile,
+                    paymentInstrument: {
+                         type: "PAY_PAGE",
                     },
-                    process.env.JWT_SECRET || config.get("JWT_SECRET")
-               );
-               const data = await RazorPayService.ReceivePayment({
-                    amount,
-                    custName,
-                    email,
-                    mobile,
-                    paymentToken,
-                    referenceId: refId,
-                    status: "INITIATED",
-               });
-               await new Donation({
-                    amount,
-                    custName,
-                    email,
-                    mobile,
-                    paymentToken,
-                    referenceId: refId,
+               };
+               const payload = JSON.stringify(data);
+               const payloadMain = Buffer.from(payload).toString("base64");
+               const keyIndex = 1;
+               const string = payloadMain + "/pg/v1/pay" + process.env.PHONE_PE_API_KEY;
+               const sha256 = crypto.createHash("sha256").update(string).digest("hex");
+               const checksum = sha256 + "###" + keyIndex;
+               const prod_URL = "https://api.phonepe.com/apis/hermes/pg/v1/pay";
+
+               const newDonation = await new Donation({
+                    userId: userId,
+                    amount: amount,
+                    custName: userName,
+                    email: email,
+                    mobile: mobile,
+                    referenceId: randomUUID(),
+                    paymentToken: checksum,
                     status: "INITIATED",
                }).save();
-               return Ok(res, data);
-          } catch (err) {
-               return UnAuthorized(res, err as string);
-          }
-     }
-
-     public async GetAllDonations(req: Request, res: Response) {
-          try {
-               const donations = await Donation.find().sort({ createdAt: -1 });
-               return Ok(res, donations);
-          } catch (err) {
-               return UnAuthorized(res, err);
-          }
-     }
-
-     public async GetDonationById(req: Request, res: Response) {
-          try {
-               const { donationId } = req.params;
-               const donation = await Donation.findById({ _id: donationId });
-               return Ok(res, donation);
-          } catch (err) {
-               return UnAuthorized(res, err);
-          }
-     }
-
-     public async SendMailToDonator(req: Request, res: Response) {
-          try {
-               const { donatorMailId, fileLink, subject }: SendMailProps = req.body;
-               console.log(req.body);
-               if (!fileLink || !donatorMailId || !subject) {
-                    return UnAuthorized(res, "missing fields");
-               }
-               const sentMailResponse = MailService.sendMail(
+               const axiosResponse = await axios.post(
+                    prod_URL,
                     {
-                         from: "mistryaksh1998@gmail.com",
-                         to: "bmistry092@gmail.com",
-                         subject: `COLLECT YOUR 80G CERTIFICATE`,
-                         html: `
-                         ${subject}
-                         Hi there! 😍
-                         <h1>Thank you for donation on om shanti welfare trust</h1>
-                         <p>
-                              Lorem ipsum dolor sit amet consectetur adipisicing elit. Eaque culpa sint sed facilis suscipit, aut repellat consequuntur aperiam. Obcaecati, voluptatem.
-                         </p>
-                         <p>Here is your official 80G certification from our NGO</p>
-                         80G Link - ${fileLink}
-                         `,
+                         request: payloadMain,
                     },
-                    (error, response) => {
-                         if (error) {
-                              console.log("error", error);
-                              return UnAuthorized(res, error.message);
-                         } else {
-                              return Ok(res, "MAIL_SENT");
-                         }
+                    {
+                         headers: {
+                              Accept: "application/json",
+                              "Content-Type": "application/json",
+                              "X-VERIFY": checksum,
+                         },
                     }
                );
+               return Ok(res, await axiosResponse.data.data.instrumentResponse.redirectInfo);
           } catch (err) {
-               return UnAuthorized(res, err);
+               console.log(err.response.data);
+               return UnAuthorized(res, err as string);
           }
      }
 }

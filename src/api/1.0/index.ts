@@ -5,11 +5,11 @@ import {
      ApiController,
      BlogController,
      ContactController,
-     DonationController,
      EventCategoryController,
      EventController,
      GalleryController,
      WebsiteController,
+     DonationController,
 } from "./controller";
 
 const routesHandler = (express: Express, controller: IController) => {
@@ -42,6 +42,6 @@ export const registerRoutesV1 = (express: Express) => {
      routesHandler(express, new ContactController());
      routesHandler(express, new WebsiteController());
      routesHandler(express, new BlogController());
-     routesHandler(express, new DonationController());
      routesHandler(express, new GalleryController());
+     routesHandler(express, new DonationController());
 };
