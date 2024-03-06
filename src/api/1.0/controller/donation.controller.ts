@@ -45,14 +45,14 @@ export class DonationController implements IController {
                     return UnAuthorized(res, "missing credentials");
                }
                const data: PhonePeRequestedBody = {
-                    merchantId: process.env.PHONE_PE_MERCHAT_ID,
+                    merchantId: process.env.PHONE_PE_MERCHANT_ID,
                     merchantTransactionId: merchantTransactionId,
                     merchantUserId: "MUID" + userId,
                     name: userName,
                     amount: amount * 100,
                     // !Change call here
                     redirectUrl: `https://omshantitrust.org/donation/status/${merchantTransactionId}`,
-                    redirectMode: PhonePeRedirectMode.POST,
+                    redirectMode: PhonePeRedirectMode.REDIRECT,
                     mobileNumber: mobile,
                     paymentInstrument: {
                          type: "PAY_PAGE",
