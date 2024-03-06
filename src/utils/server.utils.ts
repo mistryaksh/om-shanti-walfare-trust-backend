@@ -74,7 +74,7 @@ export const NotFound = (res: Response, message: string) => {
      });
 };
 
-export const UnAuthorized = (res: Response, message: string) => {
+export const UnAuthorized = (res: Response, message: string | any) => {
      res.status(STATUS_CODES.UNAUTHORIZED).json({
           success: false,
           status_code: STATUS_CODES.UNAUTHORIZED,
