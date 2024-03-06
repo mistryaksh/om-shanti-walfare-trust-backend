@@ -102,7 +102,7 @@ export class DonationController implements IController {
                if (!merchantTransactionId) {
                     return UnAuthorized(res, "please provide transaction id");
                }
-               const merchantId = process.env.PHONE_PE_MERCHAT_ID;
+               const merchantId = process.env.PHONE_PE_MERCHANT_ID;
                const keyIndex = 1;
                const string = `/pg/v1/status/${merchantId}/${merchantTransactionId}` + process.env.PHONE_PE_API_KEY;
                const sha256 = crypto.createHash("sha256").update(string).digest("hex");
